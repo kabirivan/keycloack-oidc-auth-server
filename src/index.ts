@@ -26,6 +26,8 @@ app.get('/', (c) => {
   return c.json({
     message: 'OIDC Identity Provider con Hono.js',
     version: '1.0.0',
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
     endpoints: {
       discovery: '/.well-known/openid-configuration',
       authorize: '/authorize',
@@ -37,6 +39,17 @@ app.get('/', (c) => {
       email: config.testUser.email,
       // password: 'baLexI' // No mostrar en producción
     }
+  });
+});
+
+// Endpoint específico para healthcheck
+app.get('/health', (c) => {
+  return c.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    version: '1.0.0'
   });
 });
 

@@ -2,6 +2,7 @@
   "name": "keycloak-oidc-auth-server",
   "version": "1.0.0",
   "description": "API OIDC con Hono.js como proveedor de identidad para Keycloak",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "dev": "npx tsx src/index.ts",
