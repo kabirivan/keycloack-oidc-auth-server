@@ -1,11 +1,18 @@
-import { Hono } from 'hono';
+import { Hono, Context, Next } from 'hono';
 import { config } from '../config.js';
 import { JWTService } from '../utils/jwt.js';
 
 const userinfo = new Hono();
 
+// Definir tipos para el contexto
+interface TokenData {
+  userId: string;
+  clientId: string;
+  scope: string;
+}
+
 // Middleware para verificar JWT
-const verifyJWT = async (c: any, next: () => Promise<void>) => {
+const verifyJWT = async (c: Context, next: Next) => {
   const authHeader = c.req.header('Authorization');
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -28,16 +35,16 @@ const verifyJWT = async (c: any, next: () => Promise<void>) => {
   }
 
   // Agregar información del token al contexto
-  c.set('tokenData', tokenData);
+  c.set('tokenData', tokenData as TokenData);
   c.set('userId', tokenData.userId);
   
   await next();
 };
 
 // Endpoint GET /userinfo - Retorna información del usuario
-userinfo.get('/userinfo', verifyJWT, (c) => {
-  const tokenData = c.get('tokenData');
-  const userId = c.get('userId');
+userinfo.get('/userinfo', verifyJWT, (c: Context) => {
+  const tokenData = c.get('tokenData') as TokenData;
+  const userId = c.get('userId') as string;
 
   // Verificar que el scope incluya openid
   if (!tokenData.scope.includes('openid')) {
@@ -69,7 +76,7 @@ userinfo.get('/userinfo', verifyJWT, (c) => {
 });
 
 // Endpoint POST /userinfo - También soporta POST según especificación OIDC
-userinfo.post('/userinfo', verifyJWT, (c) => {
+userinfo.post('/userinfo', verifyJWT, (c: Context) => {
   // Reutilizar la misma lógica que GET
   return userinfo.fetch(new Request(c.req.url, {
     method: 'GET',
