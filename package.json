@@ -1,0 +1,41 @@
+{
+  "name": "keycloak-oidc-auth-server",
+  "version": "1.0.0",
+  "description": "Demo completa de autenticación que actúa como puente entre API legacy y Supabase usando Keycloak",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "keycloak",
+    "oidc",
+    "supabase",
+    "hono",
+    "authentication",
+    "token-exchange"
+  ],
+  "author": "Xavier Aguas",
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^3.12.8",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.22.4",
+    "@supabase/supabase-js": "^2.38.4",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/cors": "^2.8.17",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
