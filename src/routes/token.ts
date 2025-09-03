@@ -83,7 +83,7 @@ token.post('/token', async (c) => {
     }
 
     // Validar client_secret
-    if (!clientSecret || clientSecret !== '12345') {
+    if (!clientSecret || clientSecret !== 'keycloak-client-secret-2024-secure') {
       return c.json({ 
         error: 'invalid_client',
         error_description: 'client_secret inválido'
@@ -130,7 +130,7 @@ token.post('/token', async (c) => {
     }
 
     // Validar client_secret
-    if (!clientSecret || clientSecret !== '12345') {
+    if (!clientSecret || clientSecret !== 'keycloak-client-secret-2024-secure') {
       return c.json({ 
         error: 'invalid_client',
         error_description: 'client_secret inválido'
