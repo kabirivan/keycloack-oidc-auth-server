@@ -4,7 +4,7 @@ export const config = {
   port: parseInt(process.env.PORT || '3000'),
   
   // URL base del servidor (se actualizará automáticamente en producción)
-  baseUrl: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'https://keycloack-oidc-auth-server-production.up.railway.app',
+  baseUrl: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app' : 'http://localhost:3000',
   
   // Clave secreta para JWT (en producción usar una clave más segura)
   jwtSecret: 'mi-clave-secreta-super-segura-para-jwt-oidc-keycloak-2024',
@@ -23,11 +23,11 @@ export const config = {
   
   // Configuración OIDC
   oidc: {
-    issuer: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'https://keycloack-oidc-auth-server-production.up.railway.app',
-    authorization_endpoint: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/authorize` : 'https://keycloack-oidc-auth-server-production.up.railway.app/authorize',
-    token_endpoint: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/token` : 'https://keycloack-oidc-auth-server-production.up.railway.app/token',
-    userinfo_endpoint: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/userinfo` : 'https://keycloack-oidc-auth-server-production.up.railway.app/userinfo',
-    jwks_uri: process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/jwks` : 'https://keycloack-oidc-auth-server-production.up.railway.app/jwks',
+    issuer: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app' : 'http://localhost:3000',
+    authorization_endpoint: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app/authorize' : 'http://localhost:3000/authorize',
+    token_endpoint: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app/token' : 'http://localhost:3000/token',
+    userinfo_endpoint: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app/userinfo' : 'http://localhost:3000/userinfo',
+    jwks_uri: process.env.PORT ? 'https://keycloack-oidc-auth-server-production.up.railway.app/jwks' : 'http://localhost:3000/jwks',
     response_types_supported: ['code', 'id_token', 'token'],
     grant_types_supported: ['authorization_code', 'password'],
     subject_types_supported: ['public'],

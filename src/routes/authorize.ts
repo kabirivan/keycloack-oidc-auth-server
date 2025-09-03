@@ -28,6 +28,21 @@ authorize.get('/authorize', (c) => {
     }, 400);
   }
 
+  // Validar redirect_uri permitidos
+  const allowedRedirectUris = [
+    'https://staging-aig-agil.allient.io/',
+    'https://staging-aig-agil.allient.io',
+    'https://keycloak-o4wc4ckkc8s0osok8wsgksgc.allient.io/realms/supabase-realm/broker/oidc-hono-provider/endpoint',
+    'http://localhost:8080/callback' // Para desarrollo local
+  ];
+
+  if (!allowedRedirectUris.some(uri => redirectUri.startsWith(uri))) {
+    return c.json({ 
+      error: 'invalid_request',
+      error_description: 'redirect_uri no permitido'
+    }, 400);
+  }
+
   // Generar HTML del formulario de login
   const loginForm = `
     <!DOCTYPE html>
