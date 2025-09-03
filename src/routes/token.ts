@@ -82,6 +82,14 @@ token.post('/token', async (c) => {
       }, 400);
     }
 
+    // Validar client_secret
+    if (!clientSecret || clientSecret !== '12345') {
+      return c.json({ 
+        error: 'invalid_client',
+        error_description: 'client_secret inválido'
+      }, 400);
+    }
+
     // Generar tokens
     const accessToken = await JWTService.generateAccessToken(
       config.testUser,
@@ -118,6 +126,14 @@ token.post('/token', async (c) => {
       return c.json({ 
         error: 'invalid_request',
         error_description: 'username, password y client_id son requeridos'
+      }, 400);
+    }
+
+    // Validar client_secret
+    if (!clientSecret || clientSecret !== '12345') {
+      return c.json({ 
+        error: 'invalid_client',
+        error_description: 'client_secret inválido'
       }, 400);
     }
 
