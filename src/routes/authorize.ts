@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { config } from '../config.js';
 import { JWTService } from '../utils/jwt.js';
+import { ExternalAuthService } from '../services/externalAuth.js';
 
 const authorize = new Hono();
 
@@ -190,13 +191,29 @@ authorize.post('/authorize', async (c) => {
   const email = formData.email as string;
   const password = formData.password as string;
 
-  // Validar credenciales
-  if (email !== config.testUser.email || password !== config.testUser.password) {
+  // Validar credenciales usando autenticación externa
+  console.log(`🔐 Iniciando validación externa para: ${email}`);
+  
+  const isValidExternalAuth = await ExternalAuthService.validateAccessTokenExists(email, password);
+  
+  if (!isValidExternalAuth) {
+    console.log(`❌ Validación externa fallida para: ${email}`);
     return c.json({ 
       error: 'access_denied',
-      error_description: 'Credenciales inválidas'
+      error_description: 'Credenciales inválidas o error en autenticación externa'
     }, 400);
   }
+
+  // Validar que el email coincida con el usuario de prueba
+  if (email !== config.testUser.email) {
+    console.log(`❌ Email no coincide con usuario de prueba: ${email} !== ${config.testUser.email}`);
+    return c.json({ 
+      error: 'access_denied',
+      error_description: 'Email no autorizado'
+    }, 400);
+  }
+
+  console.log(`✅ Validación externa exitosa para: ${email}`);
 
   // Generar código de autorización
   const authCode = JWTService.generateAuthorizationCode();
