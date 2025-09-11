@@ -10,8 +10,14 @@ export interface ExternalAuthRequest {
   password: string;
 }
 
+export interface TokenValidationResponse {
+  transaccion: boolean;
+  valido: boolean;
+}
+
 export class ExternalAuthService {
   private static readonly EXTERNAL_AUTH_URL = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
+  private static readonly TOKEN_VALIDATION_URL = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token';
   private static readonly TEST_USER_EMAIL = 'hortiz@libelulasoft.com';
 
   /**
@@ -69,16 +75,56 @@ export class ExternalAuthService {
   }
 
   /**
-   * Valida solo que el endpoint externo devuelva un access token
-   * Sin hacer nada con el token, solo verificar que existe
+   * Valida un access token usando el endpoint de validación
+   * @param accessToken Token de acceso a validar
+   * @param email Email del usuario
+   * @returns Promise<boolean> true si el token es válido
+   */
+  static async validateAccessToken(accessToken: string, email: string): Promise<boolean> {
+    try {
+      console.log(`🔍 Validando access token para: ${email}`);
+      
+      const validationUrl = `${this.TOKEN_VALIDATION_URL}&token=${encodeURIComponent(accessToken)}&correo=${encodeURIComponent(email)}`;
+      
+      const response = await fetch(validationUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.error(`❌ Error en validación de token: ${response.status} ${response.statusText}`);
+        return false;
+      }
+
+      const data: TokenValidationResponse = await response.json();
+      
+      // Validar que la respuesta tenga la estructura esperada
+      if (!data.transaccion || data.valido !== true) {
+        console.error('❌ Token no válido según el endpoint externo:', data);
+        return false;
+      }
+
+      console.log('✅ Token validado exitosamente por el endpoint externo');
+      return true;
+    } catch (error) {
+      console.error('❌ Error validando access token:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Valida las credenciales y el access token obtenido
    * @param email Email del usuario
    * @param password Contraseña del usuario
-   * @returns Promise<boolean> true si el endpoint devuelve un access token válido
+   * @returns Promise<boolean> true si las credenciales son válidas y el token es válido
    */
   static async validateAccessTokenExists(email: string, password: string): Promise<boolean> {
     try {
-      console.log(`🔍 Validando existencia de access token para: ${email}`);
+      console.log(`🔍 Validando credenciales y access token para: ${email}`);
       
+      // Paso 1: Obtener credenciales del endpoint de login
       const authResponse = await this.validateCredentials(email, password);
       
       if (!authResponse) {
@@ -86,19 +132,29 @@ export class ExternalAuthService {
         return false;
       }
 
-      // Solo validar que el access token existe y no está vacío
+      // Paso 2: Validar que el access token existe y no está vacío
       const hasValidAccessToken = authResponse.accessToken && authResponse.accessToken.length > 0;
       
-      if (hasValidAccessToken) {
-        console.log('✅ Access token válido recibido del endpoint externo');
-        console.log(`📧 Email validado: ${email}`);
-        return true;
-      } else {
+      if (!hasValidAccessToken) {
         console.log('❌ Access token inválido o vacío');
         return false;
       }
+
+      console.log('✅ Access token recibido del endpoint externo');
+
+      // Paso 3: Validar el access token usando el endpoint de validación
+      const isTokenValid = await this.validateAccessToken(authResponse.accessToken, email);
+      
+      if (!isTokenValid) {
+        console.log('❌ Access token no válido según el endpoint de validación');
+        return false;
+      }
+
+      console.log('✅ Credenciales y access token validados exitosamente');
+      console.log(`📧 Email validado: ${email}`);
+      return true;
     } catch (error) {
-      console.error('❌ Error validando access token:', error);
+      console.error('❌ Error validando credenciales y access token:', error);
       return false;
     }
   }

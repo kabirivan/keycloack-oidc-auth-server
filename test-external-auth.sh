@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Script de prueba para validar la autenticación externa
-echo "🧪 Probando autenticación externa con OIDC Provider"
-echo "=================================================="
+echo "🧪 Probando autenticación externa con validación de token"
+echo "========================================================="
 
 # Configuración
 BASE_URL="http://localhost:3000"
@@ -72,6 +72,14 @@ if echo "$token_response" | grep -q "access_token"; then
     # Extraer access token
     access_token=$(echo "$token_response" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
     echo "🎫 Access Token: ${access_token:0:50}..."
+    
+    echo ""
+    echo "6️⃣ Flujo de validación completado:"
+    echo "   ✅ Credenciales validadas contra endpoint externo"
+    echo "   ✅ Access token obtenido del endpoint de login"
+    echo "   ✅ Access token validado contra endpoint de validación"
+    echo "   ✅ Email verificado: $TEST_EMAIL"
+    echo "   ✅ Flujo OIDC completado exitosamente"
 else
     echo "❌ No se recibió access token"
 fi
