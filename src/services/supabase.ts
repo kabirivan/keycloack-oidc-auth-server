@@ -23,21 +23,25 @@ export class SupabaseService {
   private static client: SupabaseClient | null = null;
 
   /**
-   * Inicializa el cliente de Supabase
+   * Inicializa el cliente de Supabase para consultas directas
    */
   private static initializeClient(): SupabaseClient {
     if (!this.client) {
-      if (!config.supabase.url || !config.supabase.anonKey) {
+      const supabaseUrl = config.supabase.url || config.supabase.defaultUrl;
+      const supabaseKey = config.supabase.anonKey || config.supabase.defaultAnonKey;
+      
+      if (!supabaseUrl || !supabaseKey) {
         throw new Error('Configuración de Supabase no encontrada');
       }
 
-      this.client = createClient(config.supabase.url, config.supabase.anonKey);
+      // Crear cliente de Supabase con la clave anónima
+      this.client = createClient(supabaseUrl, supabaseKey);
     }
     return this.client;
   }
 
   /**
-   * Obtiene un usuario por email desde Supabase
+   * Obtiene un usuario por email desde Supabase usando la librería oficial
    * @param email Email del usuario
    * @returns Promise<SupabaseUser | null> Usuario encontrado o null
    */
@@ -47,6 +51,7 @@ export class SupabaseService {
       
       const supabase = this.initializeClient();
       
+      // Consultar usuario usando la librería oficial de Supabase
       const { data, error } = await supabase
         .from('user')
         .select('*')

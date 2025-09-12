@@ -21,7 +21,7 @@ export const config = {
     email_verified: true
   },
 
-  // Configuración de Supabase
+  // Configuración de Supabase (consultas directas sin autenticación)
   supabase: {
     url: process.env.SUPABASE_URL || '',
     anonKey: process.env.SUPABASE_ANON_KEY || '',

@@ -1,6 +1,6 @@
 # Configuración de Supabase
 
-Este proyecto requiere configuración de Supabase para consultar la tabla `user` y obtener información del usuario autenticado.
+Este proyecto utiliza la librería oficial de Supabase para consultar la tabla `user` y obtener información del usuario una vez que el token externo ha sido validado.
 
 ## Variables de Entorno Requeridas
 
@@ -58,19 +58,26 @@ El servicio mapea automáticamente los datos de Supabase al formato OIDC:
 1. Usuario ingresa credenciales
 2. Se valida contra el endpoint externo de login
 3. Se valida el access token contra el endpoint de validación
-4. Se consulta el usuario en Supabase por email
+4. **Una vez validado el token externo**, se consulta la tabla `user` en Supabase usando la librería oficial
 5. Se mapean los datos de Supabase al formato OIDC
 6. Se generan los tokens JWT con los datos del usuario
 
+**Nota**: Se utiliza la clave anónima de Supabase para las consultas, sin autenticación de usuario.
+
 ## Políticas de Seguridad
 
-Asegúrate de configurar las políticas RLS (Row Level Security) en Supabase para la tabla `user`:
+Para consultas con la clave anónima, asegúrate de que la tabla `user` sea accesible o configura las políticas RLS apropiadas:
 
 ```sql
--- Habilitar RLS
+-- Opción 1: Deshabilitar RLS para consultas directas (menos seguro)
+ALTER TABLE public.user DISABLE ROW LEVEL SECURITY;
+
+-- Opción 2: Habilitar RLS con política permisiva (más seguro)
 ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;
 
--- Política para permitir lectura por email (ajusta según tus necesidades)
+-- Política para permitir lectura por email
 CREATE POLICY "Allow read by email" ON public.user
   FOR SELECT USING (true);
 ```
+
+**Recomendación**: Usa la Opción 2 con políticas RLS para mayor seguridad.
