@@ -13,6 +13,7 @@ const authorizationCodes = new Map<string, {
   scope: string;
   expiresAt: number;
   userId: string;
+  userEmail?: string;
 }>();
 
 // Almacenamiento en memoria para tokens de acceso
@@ -97,7 +98,8 @@ export class JWTService {
     redirectUri: string, 
     state: string | undefined,
     scope: string,
-    userId: string
+    userId: string,
+    userEmail?: string
   ): void {
     const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutos
     
@@ -108,7 +110,8 @@ export class JWTService {
       state,
       scope,
       expiresAt,
-      userId
+      userId,
+      userEmail
     });
   }
 
@@ -119,6 +122,7 @@ export class JWTService {
     state?: string;
     scope: string;
     userId: string;
+    userEmail?: string;
   } | null {
     const authCode = authorizationCodes.get(code);
     
@@ -139,7 +143,8 @@ export class JWTService {
       redirectUri: authCode.redirectUri,
       state: authCode.state,
       scope: authCode.scope,
-      userId: authCode.userId
+      userId: authCode.userId,
+      userEmail: authCode.userEmail
     };
   }
 

@@ -92,8 +92,9 @@ token.post('/token', async (c) => {
       }, 400);
     }
 
-    // Obtener datos del usuario desde Supabase para reemplazar testUser con datos reales
-    const supabaseUser = await ExternalAuthService.getUserFromSupabase(config.testUser.email);
+    // Obtener datos del usuario desde Supabase usando el email del usuario autenticado
+    const userEmail = authCodeData.userEmail || config.testUser.email;
+    const supabaseUser = await ExternalAuthService.getUserFromSupabase(userEmail);
     const userForTokens = supabaseUser ? supabaseUser.oidcUser : config.testUser;
     
     if (supabaseUser) {

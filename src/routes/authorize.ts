@@ -252,7 +252,8 @@ authorize.post('/authorize', async (c) => {
     redirectUri,
     state,
     scope,
-    userForAuth.sub
+    userForAuth.sub,
+    userForAuth.email
   );
 
   // Construir URL de redirección
