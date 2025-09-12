@@ -64,11 +64,7 @@ export class ExternalAuthService {
         return null;
       }
 
-      // Validar que el email coincida con el usuario de prueba
-      if (email !== this.TEST_USER_EMAIL) {
-        console.error(`❌ Email no coincide con usuario de prueba: ${email} !== ${this.TEST_USER_EMAIL}`);
-        return null;
-      }
+      // Nota: Se permite cualquier email válido que pase la autenticación externa
 
       console.log('✅ Autenticación externa exitosa');
       console.log(`📧 Email validado: ${email}`);
