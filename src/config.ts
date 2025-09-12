@@ -9,7 +9,7 @@ export const config = {
   // Clave secreta para JWT (en producción usar una clave más segura)
   jwtSecret: 'mi-clave-secreta-super-segura-para-jwt-oidc-keycloak-2024',
   
-  // Usuario de prueba en memoria
+  // Usuario de prueba en memoria (se sobrescribirá con datos de Supabase)
   testUser: {
     email: 'hortiz@libelulasoft.com',
     password: 'baLexI',
@@ -19,6 +19,15 @@ export const config = {
     family_name: 'Test',
     preferred_username: 'hortiz',
     email_verified: true
+  },
+
+  // Configuración de Supabase
+  supabase: {
+    url: process.env.SUPABASE_URL || '',
+    anonKey: process.env.SUPABASE_ANON_KEY || '',
+    // Configuración por defecto para desarrollo (debes configurar las variables de entorno)
+    defaultUrl: 'https://your-project.supabase.co',
+    defaultAnonKey: 'your-anon-key'
   },
   
   // Configuración OIDC

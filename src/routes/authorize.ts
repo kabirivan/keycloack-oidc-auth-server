@@ -191,41 +191,33 @@ authorize.post('/authorize', async (c) => {
   const email = formData.email as string;
   const password = formData.password as string;
 
-  // Validar credenciales usando autenticación externa
-  console.log(`🔐 Iniciando validación externa para: ${email}`);
+  // Validar credenciales usando autenticación externa y Supabase
+  console.log(`🔐 Iniciando validación externa con Supabase para: ${email}`);
   
-  const isValidExternalAuth = await ExternalAuthService.validateAccessTokenExists(email, password);
+  const authenticatedUser = await ExternalAuthService.authenticateUserWithSupabase(email, password);
   
-  if (!isValidExternalAuth) {
-    console.log(`❌ Validación externa fallida para: ${email}`);
+  if (!authenticatedUser) {
+    console.log(`❌ Validación externa con Supabase fallida para: ${email}`);
     return c.json({ 
       error: 'access_denied',
-      error_description: 'Credenciales inválidas o error en autenticación externa'
+      error_description: 'Credenciales inválidas, error en autenticación externa o usuario no encontrado en Supabase'
     }, 400);
   }
 
-  // Validar que el email coincida con el usuario de prueba
-  if (email !== config.testUser.email) {
-    console.log(`❌ Email no coincide con usuario de prueba: ${email} !== ${config.testUser.email}`);
-    return c.json({ 
-      error: 'access_denied',
-      error_description: 'Email no autorizado'
-    }, 400);
-  }
-
-  console.log(`✅ Validación externa exitosa para: ${email}`);
+  console.log(`✅ Validación externa con Supabase exitosa para: ${email}`);
+  console.log(`👤 Usuario autenticado: ${authenticatedUser.oidcUser.name} (${authenticatedUser.oidcUser.email})`);
 
   // Generar código de autorización
   const authCode = JWTService.generateAuthorizationCode();
   
-  // Almacenar código de autorización
+  // Almacenar código de autorización con datos del usuario de Supabase
   JWTService.storeAuthorizationCode(
     authCode,
     clientId,
     redirectUri,
     state,
     scope,
-    config.testUser.sub
+    authenticatedUser.oidcUser.sub
   );
 
   // Construir URL de redirección

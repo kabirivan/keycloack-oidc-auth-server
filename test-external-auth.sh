@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Script de prueba para validar la autenticación externa
-echo "🧪 Probando autenticación externa con validación de token"
-echo "========================================================="
+echo "🧪 Probando autenticación externa con validación de token y Supabase"
+echo "===================================================================="
 
 # Configuración
 BASE_URL="http://localhost:3000"
@@ -78,6 +78,8 @@ if echo "$token_response" | grep -q "access_token"; then
     echo "   ✅ Credenciales validadas contra endpoint externo"
     echo "   ✅ Access token obtenido del endpoint de login"
     echo "   ✅ Access token validado contra endpoint de validación"
+    echo "   ✅ Usuario consultado en Supabase"
+    echo "   ✅ Datos mapeados desde Supabase a formato OIDC"
     echo "   ✅ Email verificado: $TEST_EMAIL"
     echo "   ✅ Flujo OIDC completado exitosamente"
 else

@@ -1,3 +1,5 @@
+import { SupabaseService, SupabaseUser } from './supabase.js';
+
 // Servicio de autenticación externa
 export interface ExternalAuthResponse {
   transaccion: boolean;
@@ -13,6 +15,11 @@ export interface ExternalAuthRequest {
 export interface TokenValidationResponse {
   transaccion: boolean;
   valido: boolean;
+}
+
+export interface AuthenticatedUser {
+  supabaseUser: SupabaseUser;
+  oidcUser: any;
 }
 
 export class ExternalAuthService {
@@ -156,6 +163,54 @@ export class ExternalAuthService {
     } catch (error) {
       console.error('❌ Error validando credenciales y access token:', error);
       return false;
+    }
+  }
+
+  /**
+   * Valida credenciales, access token y obtiene datos del usuario desde Supabase
+   * @param email Email del usuario
+   * @param password Contraseña del usuario
+   * @returns Promise<AuthenticatedUser | null> Usuario autenticado con datos de Supabase o null
+   */
+  static async authenticateUserWithSupabase(email: string, password: string): Promise<AuthenticatedUser | null> {
+    try {
+      console.log(`🔍 Autenticando usuario con Supabase: ${email}`);
+      
+      // Paso 1: Validar credenciales y access token
+      const isValidAuth = await this.validateAccessTokenExists(email, password);
+      
+      if (!isValidAuth) {
+        console.log('❌ Validación de credenciales fallida');
+        return null;
+      }
+
+      // Paso 2: Consultar usuario en Supabase
+      const supabaseUser = await SupabaseService.getUserByEmail(email);
+      
+      if (!supabaseUser) {
+        console.log('❌ Usuario no encontrado en Supabase');
+        return null;
+      }
+
+      // Paso 3: Mapear usuario de Supabase a formato OIDC
+      const oidcUser = SupabaseService.mapSupabaseUserToOIDC(supabaseUser);
+
+      console.log('✅ Usuario autenticado exitosamente con datos de Supabase');
+      console.log('📊 Datos del usuario:', {
+        id: oidcUser.sub,
+        name: oidcUser.name,
+        email: oidcUser.email,
+        role: oidcUser.role,
+        company_id: oidcUser.company_id
+      });
+
+      return {
+        supabaseUser,
+        oidcUser
+      };
+    } catch (error) {
+      console.error('❌ Error autenticando usuario con Supabase:', error);
+      return null;
     }
   }
 }
