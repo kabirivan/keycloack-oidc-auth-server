@@ -103,7 +103,7 @@ export class SupabaseService {
       email_verified: true,
       name: supabaseUser.full_name,
       given_name: supabaseUser.full_name.split(' ')[0] || supabaseUser.full_name,
-      family_name: supabaseUser.full_name.split(' ').slice(1).join(' ') || '',
+      family_name: supabaseUser.full_name.split(' ').slice(1).join(' ') || supabaseUser.full_name.split(' ')[0] || supabaseUser.full_name,
       preferred_username: supabaseUser.email.split('@')[0],
       // Campos adicionales de Supabase
       company_id: supabaseUser.company_id,
