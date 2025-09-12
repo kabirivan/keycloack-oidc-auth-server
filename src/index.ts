@@ -58,6 +58,18 @@ app.get('/health', (c) => {
   });
 });
 
+// Endpoint de debug para verificar variables de entorno
+app.get('/debug/env', (c) => {
+  return c.json({
+    SUPABASE_URL: process.env.SUPABASE_URL ? '✅ Configurada' : '❌ No configurada',
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? '✅ Configurada' : '❌ No configurada',
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT,
+    config_supabase_url: config.supabase.url,
+    config_supabase_anon_key: config.supabase.anonKey ? '✅ Configurada' : '❌ No configurada'
+  });
+});
+
 // Registrar rutas
 app.route('/', wellKnown);
 app.route('/', authorize);
