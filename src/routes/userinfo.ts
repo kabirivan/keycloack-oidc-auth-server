@@ -42,7 +42,7 @@ const verifyJWT = async (c: Context, next: Next) => {
 };
 
 // Endpoint GET /userinfo - Retorna información del usuario
-userinfo.get('/userinfo', verifyJWT, (c: Context) => {
+userinfo.get('/userinfo', verifyJWT, async (c: Context) => {
   const tokenData = c.get('tokenData') as TokenData;
   const userId = c.get('userId') as string;
 
@@ -54,25 +54,55 @@ userinfo.get('/userinfo', verifyJWT, (c: Context) => {
     }, 403);
   }
 
-  // Retornar información del usuario basada en el scope
-  const userInfo: any = {
-    sub: config.testUser.sub
-  };
+  try {
+    // Obtener información del usuario desde Supabase
+    const { ExternalAuthService } = await import('../services/externalAuth.js');
+    const supabaseUser = await ExternalAuthService.getUserFromSupabase('xaguas@allient.io');
+    
+    // Usar datos reales del usuario si están disponibles, sino usar testUser
+    const userData = supabaseUser ? supabaseUser.oidcUser : config.testUser;
 
-  // Agregar claims según el scope
-  if (tokenData.scope.includes('profile')) {
-    userInfo.name = config.testUser.name;
-    userInfo.given_name = config.testUser.given_name;
-    userInfo.family_name = config.testUser.family_name;
-    userInfo.preferred_username = config.testUser.preferred_username;
+    // Retornar información del usuario basada en el scope
+    const userInfo: any = {
+      sub: tokenData.userId
+    };
+
+    // Agregar claims según el scope
+    if (tokenData.scope.includes('profile')) {
+      userInfo.name = userData.name;
+      userInfo.given_name = userData.given_name;
+      userInfo.family_name = userData.family_name;
+      userInfo.preferred_username = userData.preferred_username;
+    }
+
+    if (tokenData.scope.includes('email')) {
+      userInfo.email = userData.email;
+      userInfo.email_verified = userData.email_verified;
+    }
+
+    return c.json(userInfo);
+  } catch (error) {
+    console.error('Error obteniendo datos del usuario:', error);
+    
+    // Fallback a testUser si hay error
+    const userInfo: any = {
+      sub: tokenData.userId
+    };
+
+    if (tokenData.scope.includes('profile')) {
+      userInfo.name = config.testUser.name;
+      userInfo.given_name = config.testUser.given_name;
+      userInfo.family_name = config.testUser.family_name;
+      userInfo.preferred_username = config.testUser.preferred_username;
+    }
+
+    if (tokenData.scope.includes('email')) {
+      userInfo.email = config.testUser.email;
+      userInfo.email_verified = config.testUser.email_verified;
+    }
+
+    return c.json(userInfo);
   }
-
-  if (tokenData.scope.includes('email')) {
-    userInfo.email = config.testUser.email;
-    userInfo.email_verified = config.testUser.email_verified;
-  }
-
-  return c.json(userInfo);
 });
 
 // Endpoint POST /userinfo - También soporta POST según especificación OIDC
