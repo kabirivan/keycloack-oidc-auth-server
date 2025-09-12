@@ -1,3 +1,6 @@
+// Cargar variables de entorno primero
+import 'dotenv/config';
+
 // Configuración del servidor OIDC
 export const config = {
   // Información de versión
