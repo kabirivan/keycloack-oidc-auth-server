@@ -66,7 +66,9 @@ app.get('/debug/env', (c) => {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     config_supabase_url: config.supabase.url,
-    config_supabase_anon_key: config.supabase.anonKey ? '✅ Configurada' : '❌ No configurada'
+    config_supabase_anon_key: config.supabase.anonKey ? '✅ Configurada' : '❌ No configurada',
+    all_env_vars: Object.keys(process.env).filter(key => key.includes('SUPABASE')),
+    dotenv_loaded: process.env.DOTENV_LOADED || 'No detectado'
   });
 });
 
