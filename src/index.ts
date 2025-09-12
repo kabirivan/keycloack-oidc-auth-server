@@ -145,6 +145,48 @@ app.get('/debug/oidc-mapping', async (c) => {
   }
 });
 
+// Endpoint de debug para probar con cualquier usuario
+app.get('/debug/user/:email', async (c) => {
+  try {
+    const email = c.req.param('email');
+    const { SupabaseService } = await import('./services/supabase.js');
+    const user = await SupabaseService.getUserByEmail(email);
+    
+    if (user) {
+      const oidcUser = SupabaseService.mapSupabaseUserToOIDC(user);
+      return c.json({
+        status: 'success',
+        message: `Mapeo OIDC exitoso para ${email}`,
+        supabaseUser: {
+          id: user.id,
+          full_name: user.full_name,
+          email: user.email,
+          role: user.role
+        },
+        oidcUser: {
+          sub: oidcUser.sub,
+          email: oidcUser.email,
+          name: oidcUser.name,
+          given_name: oidcUser.given_name,
+          family_name: oidcUser.family_name,
+          preferred_username: oidcUser.preferred_username
+        }
+      });
+    } else {
+      return c.json({
+        status: 'error',
+        message: `Usuario ${email} no encontrado en Supabase`
+      });
+    }
+  } catch (error) {
+    return c.json({
+      status: 'error',
+      message: 'Error en mapeo OIDC',
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
 
 // Registrar rutas
 app.route('/', wellKnown);
