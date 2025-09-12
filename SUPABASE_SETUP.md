@@ -1,6 +1,6 @@
 # Configuración de Supabase
 
-Este proyecto utiliza la librería oficial de Supabase para consultar la tabla `user` y obtener información del usuario una vez que el token externo ha sido validado.
+Este proyecto utiliza la librería oficial de Supabase para consultar la tabla `user` sin autenticación, solo usando la clave anónima para obtener información del usuario una vez que el token externo ha sido validado.
 
 ## Variables de Entorno Requeridas
 
@@ -58,11 +58,11 @@ El servicio mapea automáticamente los datos de Supabase al formato OIDC:
 1. Usuario ingresa credenciales
 2. Se valida contra el endpoint externo de login
 3. Se valida el access token contra el endpoint de validación
-4. **Una vez validado el token externo**, se consulta la tabla `user` en Supabase usando la librería oficial
+4. **Una vez validado el token externo**, se consulta la tabla `user` en Supabase usando la librería oficial (sin autenticación)
 5. Se mapean los datos de Supabase al formato OIDC
 6. Se generan los tokens JWT con los datos del usuario
 
-**Nota**: Se utiliza la clave anónima de Supabase para las consultas, sin autenticación de usuario.
+**Nota**: Se utiliza la clave anónima de Supabase para las consultas directas, sin autenticación de usuario ni sesiones.
 
 ## Políticas de Seguridad
 

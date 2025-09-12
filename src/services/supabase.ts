@@ -23,7 +23,7 @@ export class SupabaseService {
   private static client: SupabaseClient | null = null;
 
   /**
-   * Inicializa el cliente de Supabase para consultas directas
+   * Inicializa el cliente de Supabase para consultas directas sin autenticación
    */
   private static initializeClient(): SupabaseClient {
     if (!this.client) {
@@ -34,24 +34,31 @@ export class SupabaseService {
         throw new Error('Configuración de Supabase no encontrada');
       }
 
-      // Crear cliente de Supabase con la clave anónima
-      this.client = createClient(supabaseUrl, supabaseKey);
+      // Crear cliente de Supabase solo con clave anónima (sin autenticación de usuario)
+      this.client = createClient(supabaseUrl, supabaseKey, {
+        auth: {
+          // Deshabilitar autenticación automática
+          autoRefreshToken: false,
+          persistSession: false,
+          detectSessionInUrl: false
+        }
+      });
     }
     return this.client;
   }
 
   /**
-   * Obtiene un usuario por email desde Supabase usando la librería oficial
+   * Obtiene un usuario por email desde Supabase usando consulta directa (sin autenticación)
    * @param email Email del usuario
    * @returns Promise<SupabaseUser | null> Usuario encontrado o null
    */
   static async getUserByEmail(email: string): Promise<SupabaseUser | null> {
     try {
-      console.log(`🔍 Consultando usuario en Supabase: ${email}`);
+      console.log(`🔍 Consultando usuario en Supabase (sin autenticación): ${email}`);
       
       const supabase = this.initializeClient();
       
-      // Consultar usuario usando la librería oficial de Supabase
+      // Consultar usuario usando la librería oficial de Supabase (solo con clave anónima)
       const { data, error } = await supabase
         .from('user')
         .select('*')
@@ -69,7 +76,7 @@ export class SupabaseService {
         return null;
       }
 
-      console.log('✅ Usuario encontrado en Supabase:', {
+      console.log('✅ Usuario encontrado en Supabase (consulta directa):', {
         id: data.id,
         full_name: data.full_name,
         email: data.email,

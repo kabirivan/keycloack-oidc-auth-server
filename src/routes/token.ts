@@ -92,11 +92,15 @@ token.post('/token', async (c) => {
       }, 400);
     }
 
-    // Obtener datos del usuario desde Supabase usando el userId almacenado
-    const supabaseUser = await SupabaseService.getUserByEmail(config.testUser.email);
-    const userForTokens = supabaseUser ? 
-      SupabaseService.mapSupabaseUserToOIDC(supabaseUser) : 
-      config.testUser;
+    // Obtener datos del usuario desde Supabase para reemplazar testUser con datos reales
+    const supabaseUser = await ExternalAuthService.getUserFromSupabase(config.testUser.email);
+    const userForTokens = supabaseUser ? supabaseUser.oidcUser : config.testUser;
+    
+    if (supabaseUser) {
+      console.log(`👤 Usando datos de Supabase: ${userForTokens.name} (${userForTokens.email})`);
+    } else {
+      console.log(`👤 Usando datos de prueba: ${userForTokens.name} (${userForTokens.email})`);
+    }
 
     // Generar tokens con datos del usuario
     const accessToken = await JWTService.generateAccessToken(
@@ -145,38 +149,47 @@ token.post('/token', async (c) => {
       }, 400);
     }
 
-    // Validar credenciales usando autenticación externa y Supabase
-    console.log(`🔐 Iniciando validación externa con Supabase para grant password: ${username}`);
+    // Validar credenciales usando autenticación externa
+    console.log(`🔐 Iniciando validación externa para grant password: ${username}`);
     
-    const authenticatedUser = await ExternalAuthService.authenticateUserWithSupabase(username, password);
+    const isValidExternalAuth = await ExternalAuthService.validateAccessTokenExists(username, password);
     
-    if (!authenticatedUser) {
-      console.log(`❌ Validación externa con Supabase fallida para: ${username}`);
+    if (!isValidExternalAuth) {
+      console.log(`❌ Validación externa fallida para: ${username}`);
       return c.json({ 
         error: 'invalid_grant',
-        error_description: 'Credenciales inválidas, error en autenticación externa o usuario no encontrado en Supabase'
+        error_description: 'Credenciales inválidas o error en autenticación externa'
       }, 400);
     }
 
-    console.log(`✅ Validación externa con Supabase exitosa para grant password: ${username}`);
-    console.log(`👤 Usuario autenticado: ${authenticatedUser.oidcUser.name} (${authenticatedUser.oidcUser.email})`);
+    console.log(`✅ Validación externa exitosa para grant password: ${username}`);
 
-    // Generar tokens con datos del usuario de Supabase
+    // Consultar usuario en Supabase para reemplazar testUser con datos reales
+    const supabaseUser = await ExternalAuthService.getUserFromSupabase(username);
+    const userForTokens = supabaseUser ? supabaseUser.oidcUser : config.testUser;
+    
+    if (supabaseUser) {
+      console.log(`👤 Usando datos de Supabase: ${userForTokens.name} (${userForTokens.email})`);
+    } else {
+      console.log(`👤 Usando datos de prueba: ${userForTokens.name} (${userForTokens.email})`);
+    }
+
+    // Generar tokens con datos del usuario (Supabase o testUser)
     const accessToken = await JWTService.generateAccessToken(
-      authenticatedUser.oidcUser,
+      userForTokens,
       clientId,
       scope
     );
 
     const idToken = await JWTService.generateIdToken(
-      authenticatedUser.oidcUser,
+      userForTokens,
       clientId
     );
 
     // Almacenar token de acceso
     JWTService.storeAccessToken(
       accessToken,
-      authenticatedUser.oidcUser.sub,
+      userForTokens.sub,
       clientId,
       scope
     );

@@ -217,33 +217,42 @@ authorize.post('/authorize', async (c) => {
   const email = formData.email as string;
   const password = formData.password as string;
 
-  // Validar credenciales usando autenticación externa y Supabase
-  console.log(`🔐 Iniciando validación externa con Supabase para: ${email}`);
+  // Validar credenciales usando autenticación externa
+  console.log(`🔐 Iniciando validación externa para: ${email}`);
   
-  const authenticatedUser = await ExternalAuthService.authenticateUserWithSupabase(email, password);
+  const isValidExternalAuth = await ExternalAuthService.validateAccessTokenExists(email, password);
   
-  if (!authenticatedUser) {
-    console.log(`❌ Validación externa con Supabase fallida para: ${email}`);
+  if (!isValidExternalAuth) {
+    console.log(`❌ Validación externa fallida para: ${email}`);
     return c.json({ 
       error: 'access_denied',
-      error_description: 'Credenciales inválidas, error en autenticación externa o usuario no encontrado en Supabase'
+      error_description: 'Credenciales inválidas o error en autenticación externa'
     }, 400);
   }
 
-  console.log(`✅ Validación externa con Supabase exitosa para: ${email}`);
-  console.log(`👤 Usuario autenticado: ${authenticatedUser.oidcUser.name} (${authenticatedUser.oidcUser.email})`);
+  console.log(`✅ Validación externa exitosa para: ${email}`);
+
+  // Consultar usuario en Supabase para reemplazar testUser con datos reales
+  const supabaseUser = await ExternalAuthService.getUserFromSupabase(email);
+  const userForAuth = supabaseUser ? supabaseUser.oidcUser : config.testUser;
+  
+  if (supabaseUser) {
+    console.log(`👤 Usando datos de Supabase: ${userForAuth.name} (${userForAuth.email})`);
+  } else {
+    console.log(`👤 Usando datos de prueba: ${userForAuth.name} (${userForAuth.email})`);
+  }
 
   // Generar código de autorización
   const authCode = JWTService.generateAuthorizationCode();
   
-  // Almacenar código de autorización con datos del usuario de Supabase
+  // Almacenar código de autorización con datos del usuario (Supabase o testUser)
   JWTService.storeAuthorizationCode(
     authCode,
     clientId,
     redirectUri,
     state,
     scope,
-    authenticatedUser.oidcUser.sub
+    userForAuth.sub
   );
 
   // Construir URL de redirección

@@ -167,24 +167,15 @@ export class ExternalAuthService {
   }
 
   /**
-   * Valida credenciales, access token y obtiene datos del usuario desde Supabase
+   * Obtiene datos del usuario desde Supabase (solo consulta, sin validación)
    * @param email Email del usuario
-   * @param password Contraseña del usuario
-   * @returns Promise<AuthenticatedUser | null> Usuario autenticado con datos de Supabase o null
+   * @returns Promise<AuthenticatedUser | null> Usuario con datos de Supabase o null
    */
-  static async authenticateUserWithSupabase(email: string, password: string): Promise<AuthenticatedUser | null> {
+  static async getUserFromSupabase(email: string): Promise<AuthenticatedUser | null> {
     try {
-      console.log(`🔍 Autenticando usuario con Supabase: ${email}`);
+      console.log(`🔍 Consultando usuario en Supabase: ${email}`);
       
-      // Paso 1: Validar credenciales y access token
-      const isValidAuth = await this.validateAccessTokenExists(email, password);
-      
-      if (!isValidAuth) {
-        console.log('❌ Validación de credenciales fallida');
-        return null;
-      }
-
-      // Paso 2: Consultar usuario en Supabase
+      // Consultar usuario en Supabase
       const supabaseUser = await SupabaseService.getUserByEmail(email);
       
       if (!supabaseUser) {
@@ -192,10 +183,10 @@ export class ExternalAuthService {
         return null;
       }
 
-      // Paso 3: Mapear usuario de Supabase a formato OIDC
+      // Mapear usuario de Supabase a formato OIDC
       const oidcUser = SupabaseService.mapSupabaseUserToOIDC(supabaseUser);
 
-      console.log('✅ Usuario autenticado exitosamente con datos de Supabase');
+      console.log('✅ Usuario obtenido de Supabase');
       console.log('📊 Datos del usuario:', {
         id: oidcUser.sub,
         name: oidcUser.name,
@@ -209,7 +200,7 @@ export class ExternalAuthService {
         oidcUser
       };
     } catch (error) {
-      console.error('❌ Error autenticando usuario con Supabase:', error);
+      console.error('❌ Error consultando usuario en Supabase:', error);
       return null;
     }
   }

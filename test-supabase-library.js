@@ -4,8 +4,8 @@
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
-console.log('🔍 Probando librería oficial de Supabase');
-console.log('========================================');
+console.log('🔍 Probando librería oficial de Supabase (sin autenticación)');
+console.log('==========================================================');
 
 // Configuración
 const TEST_EMAIL = 'hortiz@libelulasoft.com';
@@ -32,17 +32,24 @@ if (SUPABASE_URL === 'https://your-project.supabase.co' || SUPABASE_ANON_KEY ===
 
 async function testSupabaseLibrary() {
     try {
-        console.log('1️⃣ Creando cliente de Supabase...');
+        console.log('1️⃣ Creando cliente de Supabase (sin autenticación)...');
         
-        // Crear cliente de Supabase
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Crear cliente de Supabase sin autenticación
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                // Deshabilitar autenticación automática
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
+            }
+        });
         
         console.log('✅ Cliente de Supabase creado');
         console.log('');
         
-        console.log('2️⃣ Consultando usuario en Supabase...');
+        console.log('2️⃣ Consultando usuario en Supabase (consulta directa)...');
         
-        // Consultar usuario usando la librería oficial
+        // Consultar usuario usando la librería oficial (sin autenticación)
         const { data, error } = await supabase
             .from('user')
             .select('*')
@@ -93,8 +100,8 @@ async function testSupabaseLibrary() {
         console.log('   Usuario OIDC:', JSON.stringify(oidcUser, null, 2));
         console.log('');
         
-        console.log('✅ Prueba de librería oficial de Supabase exitosa');
-        console.log('🎯 El servicio puede consultar la tabla user usando la librería oficial');
+        console.log('✅ Prueba de librería oficial de Supabase exitosa (sin autenticación)');
+        console.log('🎯 El servicio puede consultar la tabla user usando la librería oficial sin autenticación');
         
         return true;
         
