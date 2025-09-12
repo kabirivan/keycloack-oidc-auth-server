@@ -98,7 +98,7 @@ export class SupabaseService {
    */
   static mapSupabaseUserToOIDC(supabaseUser: SupabaseUser): any {
     return {
-      sub: supabaseUser.id,
+      sub: supabaseUser.email, // Usar email como sub para mejor compatibilidad con Keycloak
       email: supabaseUser.email,
       email_verified: true,
       name: supabaseUser.full_name,
@@ -110,7 +110,10 @@ export class SupabaseService {
       role: supabaseUser.role,
       enabled: supabaseUser.enabled,
       created_at: supabaseUser.created_at,
-      updated_at: supabaseUser.updated_at
+      updated_at: supabaseUser.updated_at,
+      // Campos específicos para Keycloak
+      user_id: supabaseUser.id, // ID original de Supabase para referencia
+      external_id: supabaseUser.id // ID externo para Keycloak
     };
   }
 
