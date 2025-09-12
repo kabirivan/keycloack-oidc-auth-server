@@ -72,6 +72,38 @@ app.get('/debug/env', (c) => {
   });
 });
 
+// Endpoint de prueba para verificar conexión a Supabase
+app.get('/debug/supabase', async (c) => {
+  try {
+    const { SupabaseService } = await import('./services/supabase.js');
+    const user = await SupabaseService.getUserByEmail('xaguas@allient.io');
+    
+    if (user) {
+      return c.json({
+        status: 'success',
+        message: 'Conexión a Supabase exitosa',
+        user: {
+          id: user.id,
+          name: user.full_name,
+          email: user.email,
+          role: user.role
+        }
+      });
+    } else {
+      return c.json({
+        status: 'error',
+        message: 'Usuario no encontrado en Supabase'
+      });
+    }
+  } catch (error) {
+    return c.json({
+      status: 'error',
+      message: 'Error conectando a Supabase',
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
 // Registrar rutas
 app.route('/', wellKnown);
 app.route('/', authorize);
