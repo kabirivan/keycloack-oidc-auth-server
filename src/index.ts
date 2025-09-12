@@ -25,7 +25,9 @@ app.use('*', cors({
 app.get('/', (c) => {
   return c.json({
     message: 'OIDC Identity Provider con Hono.js',
-    version: '1.0.0',
+    version: config.version,
+    buildDate: config.buildDate,
+    environment: config.environment,
     status: 'healthy',
     timestamp: new Date().toISOString(),
     endpoints: {
@@ -49,7 +51,9 @@ app.get('/health', (c) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    version: '1.0.0'
+    version: config.version,
+    buildDate: config.buildDate,
+    environment: config.environment
   });
 });
 

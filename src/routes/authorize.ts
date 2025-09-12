@@ -135,6 +135,25 @@ authorize.get('/authorize', (c) => {
             .test-credentials strong {
                 color: #333;
             }
+            .version-info {
+                text-align: center;
+                margin-top: 1.5rem;
+                padding-top: 1rem;
+                border-top: 1px solid #e1e5e9;
+                font-size: 0.8rem;
+                color: #888;
+            }
+            .version-info .version {
+                font-weight: 600;
+                color: #667eea;
+            }
+            .version-info .environment {
+                margin-left: 0.5rem;
+                padding: 0.2rem 0.5rem;
+                background: #f0f0f0;
+                border-radius: 3px;
+                font-size: 0.7rem;
+            }
         </style>
     </head>
     <body>
@@ -169,6 +188,13 @@ authorize.get('/authorize', (c) => {
                 <strong>Credenciales de prueba:</strong><br>
                 Email: hortiz@libelulasoft.com<br>
                 Contraseña: baLexI
+            </div>
+            
+            <div class="version-info">
+                <span class="version">v${config.version}</span>
+                <span class="environment">${config.environment}</span>
+                <br>
+                <small>Build: ${new Date(config.buildDate).toLocaleDateString()}</small>
             </div>
         </div>
     </body>

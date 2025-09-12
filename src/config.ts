@@ -1,5 +1,10 @@
 // Configuración del servidor OIDC
 export const config = {
+  // Información de versión
+  version: process.env.APP_VERSION || '1.0.0',
+  buildDate: process.env.BUILD_DATE || new Date().toISOString(),
+  environment: process.env.NODE_ENV || 'development',
+  
   // Puerto del servidor (Railway usa PORT automáticamente)
   port: parseInt(process.env.PORT || '3000'),
   
