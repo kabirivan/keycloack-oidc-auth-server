@@ -74,6 +74,11 @@ userinfo.get('/userinfo', verifyJWT, async (c: Context) => {
       userInfo.family_name = userData.family_name;
       userInfo.preferred_username = userData.preferred_username;
     }
+    
+    // Siempre incluir family_name si está disponible
+    if (userData.family_name) {
+      userInfo.family_name = userData.family_name;
+    }
 
     if (tokenData.scope.includes('email')) {
       userInfo.email = userData.email;
@@ -94,6 +99,11 @@ userinfo.get('/userinfo', verifyJWT, async (c: Context) => {
       userInfo.given_name = config.testUser.given_name;
       userInfo.family_name = config.testUser.family_name;
       userInfo.preferred_username = config.testUser.preferred_username;
+    }
+    
+    // Siempre incluir family_name si está disponible
+    if (config.testUser.family_name) {
+      userInfo.family_name = config.testUser.family_name;
     }
 
     if (tokenData.scope.includes('email')) {
