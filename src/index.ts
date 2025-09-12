@@ -145,6 +145,7 @@ app.get('/debug/oidc-mapping', async (c) => {
   }
 });
 
+
 // Registrar rutas
 app.route('/', wellKnown);
 app.route('/', authorize);

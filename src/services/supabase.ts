@@ -98,7 +98,7 @@ export class SupabaseService {
    */
   static mapSupabaseUserToOIDC(supabaseUser: SupabaseUser): any {
     return {
-      sub: `user-${supabaseUser.id}`, // Usar formato user-{id} para compatibilidad con Keycloak
+      sub: supabaseUser.email.split('@')[0], // Usar preferred_username como sub para Keycloak
       email: supabaseUser.email,
       email_verified: true,
       name: supabaseUser.full_name,
