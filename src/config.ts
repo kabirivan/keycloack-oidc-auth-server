@@ -40,8 +40,8 @@ export const config = {
 
   // Configuración de autenticación externa
   externalAuth: {
-    authUrl: process.env.EXTERNAL_AUTH_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login',
-    tokenValidationUrl: process.env.EXTERNAL_TOKEN_VALIDATION_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token'
+    authUrl: process.env.EXTERNAL_AUTH_URL,
+    tokenValidationUrl: process.env.EXTERNAL_TOKEN_VALIDATION_URL
   },
   
   // Configuración OIDC

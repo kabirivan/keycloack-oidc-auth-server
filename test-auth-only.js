@@ -21,7 +21,7 @@ async function testExternalAuth() {
         console.log('1️⃣ Probando autenticación externa...');
         
         // Probar autenticación externa
-        const loginUrl = process.env.EXTERNAL_AUTH_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
+        const loginUrl = process.env.EXTERNAL_AUTH_URL;
         const loginResponse = await fetch(loginUrl, {
             method: 'POST',
             headers: {
