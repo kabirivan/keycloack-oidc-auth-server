@@ -10,8 +10,8 @@ console.log('🔍 Probando búsqueda de usuario específico');
 console.log('==========================================');
 
 // Usuario a probar
-const TEST_EMAIL = 'xaguas@allient.io';
-const TEST_PASSWORD = 'UbfIqm';
+const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'hortiz@libelulasoft.com';
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'baLexI';
 
 // Configuración de Supabase
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://your-project.supabase.co';
@@ -107,7 +107,7 @@ async function testUserSearch() {
         console.log('5️⃣ Probando autenticación externa...');
         
         // Probar autenticación externa
-        const loginUrl = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
+        const loginUrl = process.env.EXTERNAL_AUTH_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
         const loginResponse = await fetch(loginUrl, {
             method: 'POST',
             headers: {
@@ -139,7 +139,7 @@ async function testUserSearch() {
         console.log('6️⃣ Probando validación de token...');
         
         // Probar validación de token
-        const validationUrl = `https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token&token=${encodeURIComponent(loginData.accessToken)}&correo=${encodeURIComponent(TEST_EMAIL)}`;
+        const validationUrl = `${process.env.EXTERNAL_TOKEN_VALIDATION_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token'}&token=${encodeURIComponent(loginData.accessToken)}&correo=${encodeURIComponent(TEST_EMAIL)}`;
         const validationResponse = await fetch(validationUrl, {
             method: 'GET',
             headers: {

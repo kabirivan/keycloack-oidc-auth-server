@@ -5,10 +5,10 @@ echo "🔍 Probando validación de token independiente"
 echo "============================================="
 
 # Configuración
-TEST_EMAIL="hortiz@libelulasoft.com"
-TEST_PASSWORD="baLexI"
-LOGIN_URL="https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login"
-VALIDATION_URL="https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token"
+TEST_EMAIL="${TEST_USER_EMAIL:-hortiz@libelulasoft.com}"
+TEST_PASSWORD="${TEST_USER_PASSWORD:-baLexI}"
+LOGIN_URL="${EXTERNAL_AUTH_URL:-https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login}"
+VALIDATION_URL="${EXTERNAL_TOKEN_VALIDATION_URL:-https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token}"
 
 echo "📧 Email: $TEST_EMAIL"
 echo "🔑 Contraseña: $TEST_PASSWORD"

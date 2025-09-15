@@ -8,7 +8,7 @@ console.log('🔍 Probando librería oficial de Supabase (sin autenticación)');
 console.log('==========================================================');
 
 // Configuración
-const TEST_EMAIL = 'hortiz@libelulasoft.com';
+const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'hortiz@libelulasoft.com';
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://your-project.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'your-anon-key';
 

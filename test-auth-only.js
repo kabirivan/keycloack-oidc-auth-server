@@ -9,8 +9,8 @@ console.log('🔍 Probando solo autenticación externa');
 console.log('=====================================');
 
 // Usuario a probar
-const TEST_EMAIL = 'xaguas@allient.io';
-const TEST_PASSWORD = 'UbfIqm';
+const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'hortiz@libelulasoft.com';
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'baLexI';
 
 console.log(`📧 Email: ${TEST_EMAIL}`);
 console.log(`🔑 Contraseña: ${TEST_PASSWORD}`);
@@ -21,7 +21,7 @@ async function testExternalAuth() {
         console.log('1️⃣ Probando autenticación externa...');
         
         // Probar autenticación externa
-        const loginUrl = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
+        const loginUrl = process.env.EXTERNAL_AUTH_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
         const loginResponse = await fetch(loginUrl, {
             method: 'POST',
             headers: {
@@ -58,7 +58,7 @@ async function testExternalAuth() {
         console.log('2️⃣ Probando validación de token...');
         
         // Probar validación de token
-        const validationUrl = `https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token&token=${encodeURIComponent(loginData.accessToken)}&correo=${encodeURIComponent(TEST_EMAIL)}`;
+        const validationUrl = `${process.env.EXTERNAL_TOKEN_VALIDATION_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token'}&token=${encodeURIComponent(loginData.accessToken)}&correo=${encodeURIComponent(TEST_EMAIL)}`;
         const validationResponse = await fetch(validationUrl, {
             method: 'GET',
             headers: {

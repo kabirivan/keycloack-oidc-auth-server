@@ -186,8 +186,8 @@ authorize.get('/authorize', (c) => {
             
             <div class="test-credentials">
                 <strong>Credenciales de prueba:</strong><br>
-                Email: hortiz@libelulasoft.com<br>
-                Contraseña: baLexI
+                Email: ${config.testUser.email}<br>
+                Contraseña: ${config.testUser.password}
             </div>
             
             <div class="version-info">

@@ -5,7 +5,7 @@ echo "🔍 Probando consulta directa a Supabase"
 echo "======================================"
 
 # Configuración
-TEST_EMAIL="hortiz@libelulasoft.com"
+TEST_EMAIL="${TEST_USER_EMAIL:-hortiz@libelulasoft.com}"
 SUPABASE_URL="${SUPABASE_URL:-https://your-project.supabase.co}"
 SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-your-anon-key}"
 

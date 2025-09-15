@@ -6,8 +6,8 @@ echo "===================================================================="
 
 # Configuración
 BASE_URL="http://localhost:3000"
-TEST_EMAIL="hortiz@libelulasoft.com"
-TEST_PASSWORD="baLexI"
+TEST_EMAIL="${TEST_USER_EMAIL:-hortiz@libelulasoft.com}"
+TEST_PASSWORD="${TEST_USER_PASSWORD:-baLexI}"
 
 echo "📧 Email de prueba: $TEST_EMAIL"
 echo "🔑 Contraseña: $TEST_PASSWORD"

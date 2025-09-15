@@ -91,7 +91,7 @@ echo ""
 print_status "5. Probando grant type password..."
 TOKEN_RESPONSE=$(curl -s -X POST http://localhost:3000/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password&username=hortiz@libelulasoft.com&password=baLexI&client_id=test-client&scope=openid%20profile%20email")
+  -d "grant_type=password&username=${TEST_USER_EMAIL:-hortiz@libelulasoft.com}&password=${TEST_USER_PASSWORD:-baLexI}&client_id=test-client&scope=openid%20profile%20email")
 
 if echo "$TOKEN_RESPONSE" | grep -q "access_token"; then
     print_success "Grant type password funcionando"
@@ -145,7 +145,7 @@ echo ""
 print_status "8. Probando con parámetros faltantes..."
 MISSING_RESPONSE=$(curl -s -X POST http://localhost:3000/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password&username=hortiz@libelulasoft.com&password=baLexI")
+  -d "grant_type=password&username=${TEST_USER_EMAIL:-hortiz@libelulasoft.com}&password=${TEST_USER_PASSWORD:-baLexI}")
 
 if echo "$MISSING_RESPONSE" | grep -q "invalid_request"; then
     print_success "Validación de parámetros funcionando correctamente"
@@ -165,7 +165,7 @@ echo "   ✅ GET  /authorize (formulario de login)"
 echo "   ✅ POST /token (intercambio de tokens)"
 echo "   ✅ GET  /userinfo (información del usuario)"
 echo ""
-print_status "👤 Usuario de prueba: hortiz@libelulasoft.com"
-print_status "🔑 Contraseña: baLexI"
+print_status "👤 Usuario de prueba: ${TEST_USER_EMAIL:-hortiz@libelulasoft.com}"
+print_status "🔑 Contraseña: ${TEST_USER_PASSWORD:-baLexI}"
 echo ""
 print_status "🚀 El servidor OIDC está listo para usar con Keycloak!"
