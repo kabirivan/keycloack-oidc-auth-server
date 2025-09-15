@@ -1,4 +1,5 @@
 import { SupabaseService, SupabaseUser } from './supabase.js';
+import { config } from '../config.js';
 
 // Servicio de autenticación externa
 export interface ExternalAuthResponse {
@@ -23,9 +24,8 @@ export interface AuthenticatedUser {
 }
 
 export class ExternalAuthService {
-  private static readonly EXTERNAL_AUTH_URL = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login';
-  private static readonly TOKEN_VALIDATION_URL = 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token';
-  private static readonly TEST_USER_EMAIL = 'hortiz@libelulasoft.com';
+  private static readonly EXTERNAL_AUTH_URL = config.externalAuth.authUrl;
+  private static readonly TOKEN_VALIDATION_URL = config.externalAuth.tokenValidationUrl;
 
   /**
    * Valida las credenciales contra el endpoint externo

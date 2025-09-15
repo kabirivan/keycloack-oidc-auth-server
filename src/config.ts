@@ -19,8 +19,8 @@ export const config = {
   
   // Usuario de prueba en memoria (se sobrescribirá con datos de Supabase)
   testUser: {
-    email: 'hortiz@libelulasoft.com',
-    password: 'baLexI',
+    email: process.env.TEST_USER_EMAIL || 'hortiz@libelulasoft.com',
+    password: process.env.TEST_USER_PASSWORD || 'baLexI',
     sub: 'user-123',
     name: 'Hortiz Test User',
     given_name: 'Hortiz',
@@ -36,6 +36,12 @@ export const config = {
     // Configuración por defecto para desarrollo (debes configurar las variables de entorno)
     defaultUrl: 'https://your-project.supabase.co',
     defaultAnonKey: 'your-anon-key'
+  },
+
+  // Configuración de autenticación externa
+  externalAuth: {
+    authUrl: process.env.EXTERNAL_AUTH_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/login',
+    tokenValidationUrl: process.env.EXTERNAL_TOKEN_VALIDATION_URL || 'https://middleware-preproduccion.portalaig.com/frontend/web/index.php?r=aig-agil-auth/validar-token'
   },
   
   // Configuración OIDC
