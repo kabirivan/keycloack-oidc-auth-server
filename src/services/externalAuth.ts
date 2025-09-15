@@ -24,8 +24,8 @@ export interface AuthenticatedUser {
 }
 
 export class ExternalAuthService {
-  private static readonly EXTERNAL_AUTH_URL = config.externalAuth.authUrl;
-  private static readonly TOKEN_VALIDATION_URL = config.externalAuth.tokenValidationUrl;
+  private static readonly EXTERNAL_AUTH_URL = config.externalAuth.authUrl!;
+  private static readonly TOKEN_VALIDATION_URL = config.externalAuth.tokenValidationUrl!;
 
   /**
    * Valida las credenciales contra el endpoint externo

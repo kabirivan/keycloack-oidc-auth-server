@@ -9,8 +9,8 @@ console.log('🔍 Probando solo autenticación externa');
 console.log('=====================================');
 
 // Usuario a probar
-const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'hortiz@libelulasoft.com';
-const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'baLexI';
+const TEST_EMAIL = process.env.TEST_USER_EMAIL;
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
 
 console.log(`📧 Email: ${TEST_EMAIL}`);
 console.log(`🔑 Contraseña: ${TEST_PASSWORD}`);
